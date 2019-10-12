@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">GIphySearchJava</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_search">Search</string>
+    <string name="title_random">Random</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="enter_search_term">Enter Search Term</string>
+    <string name="searching">Searching: ##TERM##</string>
+    <string name="look_it_up">Let\'s Look for it!</string>
 </resources>

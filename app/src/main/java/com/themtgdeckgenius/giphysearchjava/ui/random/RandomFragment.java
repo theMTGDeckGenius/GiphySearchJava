@@ -1,4 +1,4 @@
-package com.themtgdeckgenius.giphysearchjava.ui.dashboard;
+package com.themtgdeckgenius.giphysearchjava.ui.random;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.themtgdeckgenius.giphysearchjava.R;
 
-public class DashboardFragment extends Fragment {
+public class RandomFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
+    private RandomViewModel randomViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(this, new Observer<String>() {
+        randomViewModel =
+                ViewModelProviders.of(this).get(RandomViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_random, container, false);
+        final TextView textView = root.findViewById(R.id.text_notifications);
+        randomViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
