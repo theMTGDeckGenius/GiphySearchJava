@@ -6,8 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.themtgdeckgenius.giphysearchjava.BuildConfig;
 import com.themtgdeckgenius.giphysearchjava.R;
 import com.themtgdeckgenius.giphysearchjava.adapters.GiphyAdapter;
@@ -82,9 +85,9 @@ public class SearchFragment extends Fragment {
 
     private void updateTitle(){
         if(mSearchTerm.isEmpty()){
-            mTextViewTitle.setText(getString(R.string.searching).replace("##TERM##", mSearchTerm));
-        } else {
             mTextViewTitle.setText(R.string.look_it_up);
+        } else {
+            mTextViewTitle.setText(getString(R.string.searching).replace("##TERM##", mSearchTerm));
         }
     }
 
