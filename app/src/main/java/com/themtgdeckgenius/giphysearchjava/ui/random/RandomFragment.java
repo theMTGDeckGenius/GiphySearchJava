@@ -18,6 +18,8 @@ import com.themtgdeckgenius.giphysearchjava.MainActivity;
 import com.themtgdeckgenius.giphysearchjava.R;
 import com.themtgdeckgenius.giphysearchjava.networking.GiphyApiService;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.RandomObject;
+import com.themtgdeckgenius.giphysearchjava.persistence.FavoriteRepository;
+import com.themtgdeckgenius.giphysearchjava.ui.dialogs.ActionsDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +36,31 @@ public class RandomFragment extends Fragment {
 
     private TextView mPageTitale;
     private ImageView mGiphyContainer;
+    private ImageView mFavorite;
+    private String mFavoriteURL;
+    private FavoriteRepository favoriteRepository;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        View root = inflater.inflate(R.layout.fragment_favorites, container, false);
+        favoriteRepository = new FavoriteRepository(getContext());
+        View root = inflater.inflate(R.layout.fragment_random, container, false);
         mPageTitale = root.findViewById(R.id.text_random_title);
         mGiphyContainer = root.findViewById(R.id.giphy_container);
-
+        mGiphyContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActionsDialog dialog = new ActionsDialog(mFavoriteURL);
+                dialog.show(getFragmentManager(), "share_dialog");
+            }
+        });
+        mFavorite = root.findViewById(R.id.favorite);
+        mFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFavorite.setImageResource(R.drawable.ic_star_favorite);
+                favoriteRepository.insertFavorite(mFavoriteURL);
+            }
+        });
         return root;
     }
 
@@ -51,6 +70,7 @@ public class RandomFragment extends Fragment {
         Random randomGenerator = new Random();
         int randomInt = randomGenerator.nextInt(terms.size());
         getRandomGiphy(terms.get(randomInt));
+
     }
 
     private void getRandomGiphy(final String term) {
@@ -61,9 +81,10 @@ public class RandomFragment extends Fragment {
             public void onResponse(Call<RandomObject> call, Response<RandomObject> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+                        mFavoriteURL = response.body().getData().getImageUrl();
                         Glide.with(getContext())
                                 .asGif()
-                                .load(response.body().getData().getImageUrl())
+                                .load(mFavoriteURL)
                                 .thumbnail(0.1f)
                                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                                 .centerCrop()

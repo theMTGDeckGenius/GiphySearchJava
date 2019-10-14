@@ -17,13 +17,13 @@ public class FavoriteRepository {
         favoritesDatabase = Room.databaseBuilder(context, FavoritesDatabase.class, DB_NAME).allowMainThreadQueries().build();
     }
 
-    public void insertTask(String url) {
+    public void insertFavorite(String url) {
         Favorite favorite = new Favorite();
         favorite.setGiphyUrl(url);
-        insertTask(favorite);
+        insertFavorite(favorite);
     }
 
-    private void insertTask(final Favorite favorite) {
+    private void insertFavorite(final Favorite favorite) {
         favoritesDatabase.favoritesDAO().insert(favorite);
     }
 

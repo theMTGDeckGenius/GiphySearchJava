@@ -12,10 +12,11 @@ import com.themtgdeckgenius.giphysearchjava.BuildConfig;
 import com.themtgdeckgenius.giphysearchjava.MainActivity;
 import com.themtgdeckgenius.giphysearchjava.R;
 import com.themtgdeckgenius.giphysearchjava.adapters.GiphyAdapter;
-import com.themtgdeckgenius.giphysearchjava.listeners.EndOfListListener;
+import com.themtgdeckgenius.giphysearchjava.listeners.SearchActionsListener;
 import com.themtgdeckgenius.giphysearchjava.networking.GiphyApiService;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.Data;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.SearchObject;
+import com.themtgdeckgenius.giphysearchjava.ui.dialogs.ActionsDialog;
 
 import java.util.ArrayList;
 
@@ -72,19 +73,25 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        mGiphyAdapter = new GiphyAdapter(new ArrayList<Data>(), getContext(), new EndOfListListener() {
+        mGiphyAdapter = new GiphyAdapter(new ArrayList<Data>(), getContext(), new SearchActionsListener() {
             @Override
             public void onEndReached(int position) {
                 doGiphySearch(position);
             }
+
+            @Override
+            public void showShareDialog(String url) {
+                ActionsDialog dialog = new ActionsDialog(url);
+                dialog.show(getFragmentManager(), "search_fragment_dialog");
+            }
         });
-        mGiphyDisplay.setLayoutManager( new GridLayoutManager(getContext(), 2));
+        mGiphyDisplay.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mGiphyDisplay.setAdapter(mGiphyAdapter);
         return root;
     }
 
-    private void updateTitle(){
-        if(mSearchTerm.isEmpty()){
+    private void updateTitle() {
+        if (mSearchTerm.isEmpty()) {
             mTextViewTitle.setText(R.string.look_it_up);
         } else {
             mTextViewTitle.setText(getString(R.string.searching).replace("##TERM##", mSearchTerm));
@@ -97,8 +104,8 @@ public class SearchFragment extends Fragment {
         call.enqueue(new Callback<SearchObject>() {
             @Override
             public void onResponse(Call<SearchObject> call, Response<SearchObject> response) {
-                if (response.isSuccessful()){
-                    if (response.body() != null){
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
                         mGiphyAdapter.addGifs(response.body().getData());
                         mGiphyAdapter.notifyDataSetChanged();
                     }

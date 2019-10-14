@@ -15,11 +15,11 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.themtgdeckgenius.giphysearchjava.ui.random.RandomFragment"
         android:label="@string/title_random"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_random" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.themtgdeckgenius.giphysearchjava.ui.favorites.FavoritesFragment"
         android:label="@string/title_favorites"
-        tools:layout="@layout/fragment_random" />
+        tools:layout="@layout/fragment_favorites" />
 </navigation>

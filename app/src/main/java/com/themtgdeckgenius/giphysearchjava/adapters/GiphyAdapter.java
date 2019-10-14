@@ -13,10 +13,12 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.themtgdeckgenius.giphysearchjava.R;
-import com.themtgdeckgenius.giphysearchjava.listeners.EndOfListListener;
+import com.themtgdeckgenius.giphysearchjava.listeners.FavoritesActionsListener;
+import com.themtgdeckgenius.giphysearchjava.listeners.SearchActionsListener;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.Data;
 import com.themtgdeckgenius.giphysearchjava.persistence.FavoriteRepository;
 import com.themtgdeckgenius.giphysearchjava.persistence.tables.Favorite;
+import com.themtgdeckgenius.giphysearchjava.ui.dialogs.ActionsDialog;
 
 import java.util.List;
 
@@ -28,27 +30,33 @@ public class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.ViewHolder> 
     private List<Data> mGiphs;
     private List<Favorite> mFavorites;
     private Context mContext;
-    EndOfListListener endOfListListener;
+    private SearchActionsListener mRefreshListAdapter;
+    private FavoritesActionsListener mFavoritesActionsListener;
+    private String mCurrentUrl = "";
 
-    public GiphyAdapter(List<Data> giphs, Context context, EndOfListListener listener) {
+    public GiphyAdapter(List<Data> giphs, Context context, SearchActionsListener listener) {
         this.mGiphs = giphs;
         this.mContext = context;
-        this.endOfListListener = listener;
+        this.mRefreshListAdapter = listener;
     }
 
-    public GiphyAdapter(List<Favorite> giphs, Context context) {
+    public GiphyAdapter(List<Favorite> giphs, Context context, FavoritesActionsListener listener) {
         this.mFavorites = giphs;
         this.mContext = context;
-        this.endOfListListener = null;
+        this.mFavoritesActionsListener = listener;
     }
 
 
     public void addGifs(List<Data> giphs) {
-        this.mGiphs.addAll(giphs) ;
+        this.mGiphs.addAll(giphs);
     }
 
-    public void setEndOfListListener(EndOfListListener listener){
-        this.endOfListListener = listener;
+    public void setRefreshListAdapter(SearchActionsListener listener) {
+        this.mRefreshListAdapter = listener;
+    }
+
+    public void setFavoritesActionsListener(FavoritesActionsListener mFavoritesActionsListener) {
+        this.mFavoritesActionsListener = mFavoritesActionsListener;
     }
 
     @NonNull
@@ -63,23 +71,31 @@ public class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.ViewHolder> 
 
         final FavoriteRepository favoriteRepository = new FavoriteRepository(mContext);
 
-        if (endOfListListener != null && position == mGiphs.size() - 1){
-            endOfListListener.onEndReached(position);
+        if (mRefreshListAdapter != null && position == mGiphs.size() - 1) {
+            mRefreshListAdapter.onEndReached(position);
         }
 
         holder.imageView.setImageDrawable(null);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mRefreshListAdapter != null){
+                    mRefreshListAdapter.showShareDialog(mCurrentUrl);
+                } else if (mFavoritesActionsListener != null){
+                    mFavoritesActionsListener.showShareDialog(mCurrentUrl);
+                }
+            }
+        });
 
-        String currentUrl = "";
-
-        if (mGiphs != null){
-            currentUrl = mGiphs.get(position).getImages().getOriginal().getUrl();
-        } else if(mFavorites != null){
-            currentUrl = mFavorites.get(position).getGiphyUrl();
+        if (mGiphs != null) {
+            mCurrentUrl = mGiphs.get(position).getImages().getOriginal().getUrl();
+        } else if (mFavorites != null) {
+            mCurrentUrl = mFavorites.get(position).getGiphyUrl();
         }
 
         Glide.with(mContext)
                 .asGif()
-                .load(currentUrl.isEmpty() ? R.drawable.broken_link : currentUrl)
+                .load(mCurrentUrl.isEmpty() ? R.drawable.broken_link : mCurrentUrl)
                 .thumbnail(0.1f)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .centerCrop()
@@ -96,24 +112,22 @@ public class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.ViewHolder> 
                     }
                 });
 
-        if(favoriteRepository.checkIfPresent(currentUrl)){
+        if (favoriteRepository.checkIfPresent(mCurrentUrl)) {
             holder.favorite.setImageResource(R.drawable.ic_star_favorite);
         } else {
             holder.favorite.setImageResource(R.drawable.ic_star_border_favorite);
         }
 
-        final String finalCurrentUrl = currentUrl;
         holder.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(favoriteRepository.checkIfPresent(finalCurrentUrl)){
-                    favoriteRepository.deleteTask(finalCurrentUrl);
+                if (favoriteRepository.checkIfPresent(mCurrentUrl)) {
+                    favoriteRepository.deleteTask(mCurrentUrl);
                     holder.favorite.setImageResource(R.drawable.ic_star_border_favorite);
                     mFavorites.remove(position);
                     notifyDataSetChanged();
                 } else {
-                    favoriteRepository.insertTask(finalCurrentUrl);
+                    favoriteRepository.insertFavorite(mCurrentUrl);
                     holder.favorite.setImageResource(R.drawable.ic_star_favorite);
                 }
             }
@@ -123,9 +137,9 @@ public class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (mGiphs != null){
+        if (mGiphs != null) {
             return mGiphs.size();
-        } else if (mFavorites != null){
+        } else if (mFavorites != null) {
             return mFavorites.size();
         } else {
             return 0;

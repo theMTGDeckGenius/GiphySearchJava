@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public String getRating(){
        String selectedRating = (String) mMenuSpinner.getSelectedItem();
        if (selectedRating.equals("Select Rating")){
+           mMenuSpinner.setSelection(1);
            return "G";
        } else {
            return selectedRating;
