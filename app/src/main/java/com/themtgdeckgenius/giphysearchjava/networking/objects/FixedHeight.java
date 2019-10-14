@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FixedHeight implements Serializable
+public class FixedHeight implements Parcelable
 {
 
     @SerializedName("height")
@@ -32,7 +34,36 @@ public class FixedHeight implements Serializable
     @SerializedName("width")
     @Expose
     private String width;
-    private final static long serialVersionUID = -2371774985777608578L;
+    public final static Parcelable.Creator<FixedHeight> CREATOR = new Creator<FixedHeight>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public FixedHeight createFromParcel(Parcel in) {
+            return new FixedHeight(in);
+        }
+
+        public FixedHeight[] newArray(int size) {
+            return (new FixedHeight[size]);
+        }
+
+    }
+    ;
+
+    protected FixedHeight(Parcel in) {
+        this.height = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4 = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4Size = ((String) in.readValue((String.class.getClassLoader())));
+        this.size = ((String) in.readValue((String.class.getClassLoader())));
+        this.url = ((String) in.readValue((String.class.getClassLoader())));
+        this.webp = ((String) in.readValue((String.class.getClassLoader())));
+        this.webpSize = ((String) in.readValue((String.class.getClassLoader())));
+        this.width = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public FixedHeight() {
+    }
 
     public String getHeight() {
         return height;
@@ -96,6 +127,21 @@ public class FixedHeight implements Serializable
 
     public void setWidth(String width) {
         this.width = width;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(height);
+        dest.writeValue(mp4);
+        dest.writeValue(mp4Size);
+        dest.writeValue(size);
+        dest.writeValue(url);
+        dest.writeValue(webp);
+        dest.writeValue(webpSize);
+        dest.writeValue(width);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

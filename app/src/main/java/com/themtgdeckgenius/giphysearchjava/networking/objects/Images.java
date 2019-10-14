@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Images implements Serializable
+public class Images implements Parcelable
 {
 
     @SerializedName("fixed_height_still")
@@ -77,7 +79,51 @@ public class Images implements Serializable
     @SerializedName("480w_still")
     @Expose
     private com.themtgdeckgenius.giphysearchjava.networking.objects._480wStill _480wStill;
-    private final static long serialVersionUID = 3829021600006750563L;
+    public final static Parcelable.Creator<Images> CREATOR = new Creator<Images>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public Images createFromParcel(Parcel in) {
+            return new Images(in);
+        }
+
+        public Images[] newArray(int size) {
+            return (new Images[size]);
+        }
+
+    }
+    ;
+
+    protected Images(Parcel in) {
+        this.fixedHeightStill = ((FixedHeightStill) in.readValue((FixedHeightStill.class.getClassLoader())));
+        this.originalStill = ((OriginalStill) in.readValue((OriginalStill.class.getClassLoader())));
+        this.fixedWidth = ((FixedWidth) in.readValue((FixedWidth.class.getClassLoader())));
+        this.fixedHeightSmallStill = ((FixedHeightSmallStill) in.readValue((FixedHeightSmallStill.class.getClassLoader())));
+        this.fixedHeightDownsampled = ((FixedHeightDownsampled) in.readValue((FixedHeightDownsampled.class.getClassLoader())));
+        this.preview = ((Preview) in.readValue((Preview.class.getClassLoader())));
+        this.fixedHeightSmall = ((FixedHeightSmall) in.readValue((FixedHeightSmall.class.getClassLoader())));
+        this.downsizedStill = ((DownsizedStill) in.readValue((DownsizedStill.class.getClassLoader())));
+        this.downsized = ((Downsized) in.readValue((Downsized.class.getClassLoader())));
+        this.downsizedLarge = ((DownsizedLarge) in.readValue((DownsizedLarge.class.getClassLoader())));
+        this.fixedWidthSmallStill = ((FixedWidthSmallStill) in.readValue((FixedWidthSmallStill.class.getClassLoader())));
+        this.previewWebp = ((PreviewWebp) in.readValue((PreviewWebp.class.getClassLoader())));
+        this.fixedWidthStill = ((FixedWidthStill) in.readValue((FixedWidthStill.class.getClassLoader())));
+        this.fixedWidthSmall = ((FixedWidthSmall) in.readValue((FixedWidthSmall.class.getClassLoader())));
+        this.downsizedSmall = ((DownsizedSmall) in.readValue((DownsizedSmall.class.getClassLoader())));
+        this.fixedWidthDownsampled = ((FixedWidthDownsampled) in.readValue((FixedWidthDownsampled.class.getClassLoader())));
+        this.downsizedMedium = ((DownsizedMedium) in.readValue((DownsizedMedium.class.getClassLoader())));
+        this.original = ((Original) in.readValue((Original.class.getClassLoader())));
+        this.fixedHeight = ((FixedHeight) in.readValue((FixedHeight.class.getClassLoader())));
+        this.looping = ((Looping) in.readValue((Looping.class.getClassLoader())));
+        this.originalMp4 = ((OriginalMp4) in.readValue((OriginalMp4.class.getClassLoader())));
+        this.previewGif = ((PreviewGif) in.readValue((PreviewGif.class.getClassLoader())));
+        this._480wStill = ((com.themtgdeckgenius.giphysearchjava.networking.objects._480wStill) in.readValue((_480wStill.class.getClassLoader())));
+    }
+
+    public Images() {
+    }
 
     public FixedHeightStill getFixedHeightStill() {
         return fixedHeightStill;
@@ -261,6 +307,36 @@ public class Images implements Serializable
 
     public void set480wStill(com.themtgdeckgenius.giphysearchjava.networking.objects._480wStill _480wStill) {
         this._480wStill = _480wStill;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(fixedHeightStill);
+        dest.writeValue(originalStill);
+        dest.writeValue(fixedWidth);
+        dest.writeValue(fixedHeightSmallStill);
+        dest.writeValue(fixedHeightDownsampled);
+        dest.writeValue(preview);
+        dest.writeValue(fixedHeightSmall);
+        dest.writeValue(downsizedStill);
+        dest.writeValue(downsized);
+        dest.writeValue(downsizedLarge);
+        dest.writeValue(fixedWidthSmallStill);
+        dest.writeValue(previewWebp);
+        dest.writeValue(fixedWidthStill);
+        dest.writeValue(fixedWidthSmall);
+        dest.writeValue(downsizedSmall);
+        dest.writeValue(fixedWidthDownsampled);
+        dest.writeValue(downsizedMedium);
+        dest.writeValue(original);
+        dest.writeValue(fixedHeight);
+        dest.writeValue(looping);
+        dest.writeValue(originalMp4);
+        dest.writeValue(previewGif);
+        dest.writeValue(_480wStill);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

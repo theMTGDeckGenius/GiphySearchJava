@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class _480wStill implements Serializable
+public class _480wStill implements Parcelable
 {
 
     @SerializedName("url")
@@ -17,7 +19,31 @@ public class _480wStill implements Serializable
     @SerializedName("height")
     @Expose
     private String height;
-    private final static long serialVersionUID = 1292063695155739456L;
+    public final static Parcelable.Creator<_480wStill> CREATOR = new Creator<_480wStill>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public _480wStill createFromParcel(Parcel in) {
+            return new _480wStill(in);
+        }
+
+        public _480wStill[] newArray(int size) {
+            return (new _480wStill[size]);
+        }
+
+    }
+    ;
+
+    protected _480wStill(Parcel in) {
+        this.url = ((String) in.readValue((String.class.getClassLoader())));
+        this.width = ((String) in.readValue((String.class.getClassLoader())));
+        this.height = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public _480wStill() {
+    }
 
     public String getUrl() {
         return url;
@@ -41,6 +67,16 @@ public class _480wStill implements Serializable
 
     public void setHeight(String height) {
         this.height = height;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(url);
+        dest.writeValue(width);
+        dest.writeValue(height);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

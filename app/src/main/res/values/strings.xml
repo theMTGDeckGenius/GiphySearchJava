@@ -6,4 +6,5 @@
     <string name="enter_search_term">Enter Search Term</string>
     <string name="searching">Searching: ##TERM##</string>
     <string name="look_it_up">Let\'s Look for it!</string>
+    <string name="rating">Rating</string>
 </resources>

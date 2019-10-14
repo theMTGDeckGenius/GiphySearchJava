@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Looping implements Serializable
+public class Looping implements Parcelable
 {
 
     @SerializedName("mp4")
@@ -14,7 +16,30 @@ public class Looping implements Serializable
     @SerializedName("mp4_size")
     @Expose
     private String mp4Size;
-    private final static long serialVersionUID = -3994562162365321678L;
+    public final static Parcelable.Creator<Looping> CREATOR = new Creator<Looping>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public Looping createFromParcel(Parcel in) {
+            return new Looping(in);
+        }
+
+        public Looping[] newArray(int size) {
+            return (new Looping[size]);
+        }
+
+    }
+    ;
+
+    protected Looping(Parcel in) {
+        this.mp4 = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4Size = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public Looping() {
+    }
 
     public String getMp4() {
         return mp4;
@@ -30,6 +55,15 @@ public class Looping implements Serializable
 
     public void setMp4Size(String mp4Size) {
         this.mp4Size = mp4Size;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(mp4);
+        dest.writeValue(mp4Size);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

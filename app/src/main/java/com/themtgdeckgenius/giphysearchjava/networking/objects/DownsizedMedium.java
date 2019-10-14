@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DownsizedMedium implements Serializable
+public class DownsizedMedium implements Parcelable
 {
 
     @SerializedName("height")
@@ -20,7 +22,32 @@ public class DownsizedMedium implements Serializable
     @SerializedName("width")
     @Expose
     private String width;
-    private final static long serialVersionUID = -6781196081461751583L;
+    public final static Parcelable.Creator<DownsizedMedium> CREATOR = new Creator<DownsizedMedium>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public DownsizedMedium createFromParcel(Parcel in) {
+            return new DownsizedMedium(in);
+        }
+
+        public DownsizedMedium[] newArray(int size) {
+            return (new DownsizedMedium[size]);
+        }
+
+    }
+    ;
+
+    protected DownsizedMedium(Parcel in) {
+        this.height = ((String) in.readValue((String.class.getClassLoader())));
+        this.size = ((String) in.readValue((String.class.getClassLoader())));
+        this.url = ((String) in.readValue((String.class.getClassLoader())));
+        this.width = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public DownsizedMedium() {
+    }
 
     public String getHeight() {
         return height;
@@ -52,6 +79,17 @@ public class DownsizedMedium implements Serializable
 
     public void setWidth(String width) {
         this.width = width;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(height);
+        dest.writeValue(size);
+        dest.writeValue(url);
+        dest.writeValue(width);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

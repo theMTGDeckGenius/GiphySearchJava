@@ -6,24 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.themtgdeckgenius.giphysearchjava.BuildConfig;
+import com.themtgdeckgenius.giphysearchjava.MainActivity;
 import com.themtgdeckgenius.giphysearchjava.R;
 import com.themtgdeckgenius.giphysearchjava.adapters.GiphyAdapter;
 import com.themtgdeckgenius.giphysearchjava.networking.GiphyApiService;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.Data;
-import com.themtgdeckgenius.giphysearchjava.networking.objects.GiphyObject;
+import com.themtgdeckgenius.giphysearchjava.networking.objects.SearchObject;
 import com.themtgdeckgenius.giphysearchjava.typedefs.RatingDefinition;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,8 +36,6 @@ public class SearchFragment extends Fragment {
     private View mPrimaryGroup;
     private View mSecondaryGroup;
     private RecyclerView mGiphyDisplay;
-
-    private LinearLayoutManager mLinearLayoutManager;
     private GiphyAdapter mGiphyAdapter;
 
     private String mSearchTerm;
@@ -76,9 +72,8 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
         mGiphyAdapter = new GiphyAdapter(new ArrayList<Data>(), getContext());
-        mGiphyDisplay.setLayoutManager(mLinearLayoutManager);
+        mGiphyDisplay.setLayoutManager( new GridLayoutManager(getContext(), 2));
         mGiphyDisplay.setAdapter(mGiphyAdapter);
         return root;
     }
@@ -93,12 +88,10 @@ public class SearchFragment extends Fragment {
 
     private void beginSearch(String string) {
         GiphyApiService giphyApiService = GiphyApiService.service;
-        RatingDefinition type = new RatingDefinition();
-        type.setRating(RatingDefinition.RATING_G);
-        Call<GiphyObject> call = giphyApiService.searchGiphy(BuildConfig.GIPHY_API_KEY, string, 25, 0, RatingDefinition.RATING_G, "en");
-        call.enqueue(new Callback<GiphyObject>() {
+        Call<SearchObject> call = giphyApiService.searchGiphy(BuildConfig.GIPHY_API_KEY, string, 25, 0, ((MainActivity) getActivity()).getRating(), "en");
+        call.enqueue(new Callback<SearchObject>() {
             @Override
-            public void onResponse(Call<GiphyObject> call, Response<GiphyObject> response) {
+            public void onResponse(Call<SearchObject> call, Response<SearchObject> response) {
                 if (response.isSuccessful()){
                     if (response.body() != null){
                         mGiphyAdapter.updateGiphs(response.body().getData());
@@ -108,7 +101,7 @@ public class SearchFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<GiphyObject> call, Throwable t) {
+            public void onFailure(Call<SearchObject> call, Throwable t) {
 
             }
         });

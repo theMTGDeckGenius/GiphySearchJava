@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Meta implements Serializable
+public class Meta implements Parcelable
 {
 
     @SerializedName("status")
@@ -17,7 +19,31 @@ public class Meta implements Serializable
     @SerializedName("response_id")
     @Expose
     private String responseId;
-    private final static long serialVersionUID = 1075818308772084352L;
+    public final static Parcelable.Creator<Meta> CREATOR = new Creator<Meta>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public Meta createFromParcel(Parcel in) {
+            return new Meta(in);
+        }
+
+        public Meta[] newArray(int size) {
+            return (new Meta[size]);
+        }
+
+    }
+    ;
+
+    protected Meta(Parcel in) {
+        this.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.msg = ((String) in.readValue((String.class.getClassLoader())));
+        this.responseId = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public Meta() {
+    }
 
     public Integer getStatus() {
         return status;
@@ -41,6 +67,16 @@ public class Meta implements Serializable
 
     public void setResponseId(String responseId) {
         this.responseId = responseId;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(status);
+        dest.writeValue(msg);
+        dest.writeValue(responseId);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

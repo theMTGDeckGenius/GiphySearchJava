@@ -1,11 +1,13 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DownsizedSmall implements Serializable
+public class DownsizedSmall implements Parcelable
 {
 
     @SerializedName("height")
@@ -20,7 +22,32 @@ public class DownsizedSmall implements Serializable
     @SerializedName("width")
     @Expose
     private String width;
-    private final static long serialVersionUID = -3244474805486829255L;
+    public final static Parcelable.Creator<DownsizedSmall> CREATOR = new Creator<DownsizedSmall>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public DownsizedSmall createFromParcel(Parcel in) {
+            return new DownsizedSmall(in);
+        }
+
+        public DownsizedSmall[] newArray(int size) {
+            return (new DownsizedSmall[size]);
+        }
+
+    }
+    ;
+
+    protected DownsizedSmall(Parcel in) {
+        this.height = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4 = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4Size = ((String) in.readValue((String.class.getClassLoader())));
+        this.width = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public DownsizedSmall() {
+    }
 
     public String getHeight() {
         return height;
@@ -52,6 +79,17 @@ public class DownsizedSmall implements Serializable
 
     public void setWidth(String width) {
         this.width = width;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(height);
+        dest.writeValue(mp4);
+        dest.writeValue(mp4Size);
+        dest.writeValue(width);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }

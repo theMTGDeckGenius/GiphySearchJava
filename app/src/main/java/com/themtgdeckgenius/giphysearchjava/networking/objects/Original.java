@@ -1,16 +1,21 @@
 
 package com.themtgdeckgenius.giphysearchjava.networking.objects;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Original implements Serializable
+public class Original implements Parcelable
 {
 
     @SerializedName("frames")
     @Expose
     private String frames;
+    @SerializedName("hash")
+    @Expose
+    private String hash;
     @SerializedName("height")
     @Expose
     private String height;
@@ -35,10 +40,38 @@ public class Original implements Serializable
     @SerializedName("width")
     @Expose
     private String width;
-    @SerializedName("hash")
-    @Expose
-    private String hash;
-    private final static long serialVersionUID = -6597341565835316691L;
+    public final static Parcelable.Creator<Original> CREATOR = new Creator<Original>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public Original createFromParcel(Parcel in) {
+            return new Original(in);
+        }
+
+        public Original[] newArray(int size) {
+            return (new Original[size]);
+        }
+
+    }
+    ;
+
+    protected Original(Parcel in) {
+        this.frames = ((String) in.readValue((String.class.getClassLoader())));
+        this.hash = ((String) in.readValue((String.class.getClassLoader())));
+        this.height = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4 = ((String) in.readValue((String.class.getClassLoader())));
+        this.mp4Size = ((String) in.readValue((String.class.getClassLoader())));
+        this.size = ((String) in.readValue((String.class.getClassLoader())));
+        this.url = ((String) in.readValue((String.class.getClassLoader())));
+        this.webp = ((String) in.readValue((String.class.getClassLoader())));
+        this.webpSize = ((String) in.readValue((String.class.getClassLoader())));
+        this.width = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public Original() {
+    }
 
     public String getFrames() {
         return frames;
@@ -46,6 +79,14 @@ public class Original implements Serializable
 
     public void setFrames(String frames) {
         this.frames = frames;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public String getHeight() {
@@ -112,12 +153,21 @@ public class Original implements Serializable
         this.width = width;
     }
 
-    public String getHash() {
-        return hash;
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(frames);
+        dest.writeValue(hash);
+        dest.writeValue(height);
+        dest.writeValue(mp4);
+        dest.writeValue(mp4Size);
+        dest.writeValue(size);
+        dest.writeValue(url);
+        dest.writeValue(webp);
+        dest.writeValue(webpSize);
+        dest.writeValue(width);
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    public int describeContents() {
+        return  0;
     }
 
 }
