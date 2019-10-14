@@ -12,10 +12,10 @@ import com.themtgdeckgenius.giphysearchjava.BuildConfig;
 import com.themtgdeckgenius.giphysearchjava.MainActivity;
 import com.themtgdeckgenius.giphysearchjava.R;
 import com.themtgdeckgenius.giphysearchjava.adapters.GiphyAdapter;
+import com.themtgdeckgenius.giphysearchjava.listeners.EndOfListListener;
 import com.themtgdeckgenius.giphysearchjava.networking.GiphyApiService;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.Data;
 import com.themtgdeckgenius.giphysearchjava.networking.objects.SearchObject;
-import com.themtgdeckgenius.giphysearchjava.typedefs.RatingDefinition;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,6 @@ public class SearchFragment extends Fragment {
 
     private String mSearchTerm;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
         mTextViewTitle = root.findViewById(R.id.text_search_title);
@@ -60,19 +59,25 @@ public class SearchFragment extends Fragment {
                 mSecondarySearchBox.setText(mSearchTerm);
                 mPrimaryGroup.setVisibility(View.GONE);
                 mSecondaryGroup.setVisibility(View.VISIBLE);
-                beginSearch(mSearchTerm);
+                doGiphySearch(0);
             }
         });
+
         mSecondarySearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSearchTerm = mSecondarySearchBox.getText().toString();
                 updateTitle();
-                beginSearch(mSearchTerm);
+                doGiphySearch(0);
             }
         });
 
-        mGiphyAdapter = new GiphyAdapter(new ArrayList<Data>(), getContext());
+        mGiphyAdapter = new GiphyAdapter(new ArrayList<Data>(), getContext(), new EndOfListListener() {
+            @Override
+            public void onEndReached(int position) {
+                doGiphySearch(position);
+            }
+        });
         mGiphyDisplay.setLayoutManager( new GridLayoutManager(getContext(), 2));
         mGiphyDisplay.setAdapter(mGiphyAdapter);
         return root;
@@ -86,15 +91,15 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    private void beginSearch(String string) {
+    private void doGiphySearch(int offset) {
         GiphyApiService giphyApiService = GiphyApiService.service;
-        Call<SearchObject> call = giphyApiService.searchGiphy(BuildConfig.GIPHY_API_KEY, string, 25, 0, ((MainActivity) getActivity()).getRating(), "en");
+        Call<SearchObject> call = giphyApiService.searchGiphy(BuildConfig.GIPHY_API_KEY, mSearchTerm, 25, offset, ((MainActivity) getActivity()).getRating(), "en");
         call.enqueue(new Callback<SearchObject>() {
             @Override
             public void onResponse(Call<SearchObject> call, Response<SearchObject> response) {
                 if (response.isSuccessful()){
                     if (response.body() != null){
-                        mGiphyAdapter.updateGiphs(response.body().getData());
+                        mGiphyAdapter.addGifs(response.body().getData());
                         mGiphyAdapter.notifyDataSetChanged();
                     }
                 }
