@@ -51,6 +51,11 @@ public class GiphyAdapter extends RecyclerView.Adapter<GiphyAdapter.ViewHolder> 
         this.mGiphs.addAll(giphs);
     }
 
+    public void replaceGifs(List<Data> giphs){
+        this.mGiphs.clear();
+        addGifs(giphs);
+    }
+
     public void setRefreshListAdapter(SearchActionsListener listener) {
         this.mRefreshListAdapter = listener;
     }

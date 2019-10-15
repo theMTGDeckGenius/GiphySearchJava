@@ -60,7 +60,7 @@ public class SearchFragment extends Fragment {
                 mSecondarySearchBox.setText(mSearchTerm);
                 mPrimaryGroup.setVisibility(View.GONE);
                 mSecondaryGroup.setVisibility(View.VISIBLE);
-                doGiphySearch(0);
+                newGiphySearch();
             }
         });
 
@@ -69,14 +69,14 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 mSearchTerm = mSecondarySearchBox.getText().toString();
                 updateTitle();
-                doGiphySearch(0);
+                newGiphySearch();
             }
         });
 
         mGiphyAdapter = new GiphyAdapter(new ArrayList<Data>(), getContext(), new SearchActionsListener() {
             @Override
             public void onEndReached(int position) {
-                doGiphySearch(position);
+                updateGiphySearch(position);
             }
 
             @Override
@@ -98,7 +98,7 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    private void doGiphySearch(int offset) {
+    private void updateGiphySearch(int offset) {
         GiphyApiService giphyApiService = GiphyApiService.service;
         Call<SearchObject> call = giphyApiService.searchGiphy(BuildConfig.GIPHY_API_KEY, mSearchTerm, 25, offset, ((MainActivity) getActivity()).getRating(), "en");
         call.enqueue(new Callback<SearchObject>() {
@@ -107,6 +107,27 @@ public class SearchFragment extends Fragment {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         mGiphyAdapter.addGifs(response.body().getData());
+                        mGiphyAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void newGiphySearch() {
+        GiphyApiService giphyApiService = GiphyApiService.service;
+        Call<SearchObject> call = giphyApiService.searchGiphy(BuildConfig.GIPHY_API_KEY, mSearchTerm, 25, 0, ((MainActivity) getActivity()).getRating(), "en");
+        call.enqueue(new Callback<SearchObject>() {
+            @Override
+            public void onResponse(Call<SearchObject> call, Response<SearchObject> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        mGiphyAdapter.replaceGifs(response.body().getData());
                         mGiphyAdapter.notifyDataSetChanged();
                     }
                 }
